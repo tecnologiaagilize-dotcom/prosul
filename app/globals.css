@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  /* Base -- dusk over the continent */
+  --ink: #0f2226;
+  --ink-panel: #16302f;
+  --ink-panel-raised: #1c3a38;
+  --line: #2b4b47;
+
+  /* Signature accent -- diplomatic seal */
+  --gold: #c89b3c;
+  --gold-soft: #e0c274;
+
+  /* Support -- terracotta, used sparingly for status/alert */
+  --clay: #b15a42;
+  --clay-soft: #d99a82;
+
+  /* Paper surfaces (light sections, cards) */
+  --paper: #f3ede0;
+  --paper-dim: #e7dfcd;
+
+  --text-on-dark: #f4f1e6;
+  --text-on-dark-dim: #b9c9c4;
+  --text-on-paper: #16242a;
+  --text-on-paper-dim: #55625f;
+
+  --status-pending: #c89b3c;
+  --status-approved: #4a7c66;
+  --status-rejected: #b15a42;
+
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--ink);
+  color: var(--text-on-dark);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.route-dash {
+  stroke-dasharray: 4 6;
+}
