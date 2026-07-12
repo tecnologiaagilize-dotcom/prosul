@@ -69,7 +69,7 @@ export default function Home() {
             <p className="eyebrow text-[var(--text-on-dark-dim)] mb-6">
               Dez estações — oito fundadores, dois associados
             </p>
-            <RouteMap hrefFor={(name) => `/diretorio?pais=${encodeURIComponent(name)}`} />
+            <RouteMap linkBase="/diretorio" />
           </div>
         </section>
 

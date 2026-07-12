@@ -5,13 +5,13 @@ import { COUNTRIES } from "@/lib/data";
 type RouteMapProps = {
   selected?: string | null;
   onSelect?: (name: string | null) => void;
-  hrefFor?: (name: string) => string;
+  linkBase?: string;
 };
 
 // A treaty route: ten stations strung along a dashed line, alternating
 // above/below like stamps on a shipping manifest. Doubles as the
 // country filter used on the directory page.
-export function RouteMap({ selected, onSelect, hrefFor }: RouteMapProps) {
+export function RouteMap({ selected, onSelect, linkBase }: RouteMapProps) {
   const n = COUNTRIES.length;
   const width = 1040;
   const height = 220;
@@ -84,9 +84,13 @@ export function RouteMap({ selected, onSelect, hrefFor }: RouteMapProps) {
           </g>
         );
 
-        if (hrefFor) {
+        if (linkBase) {
           return (
-            <a key={c.code} href={hrefFor(c.name)} aria-label={c.name}>
+            <a
+              key={c.code}
+              href={`${linkBase}?pais=${encodeURIComponent(c.name)}`}
+              aria-label={c.name}
+            >
               {content}
             </a>
           );
