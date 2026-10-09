@@ -1,0 +1,16 @@
+PROSUL — LOGIN SEM MFA E ACESSO À ADMINISTRAÇÃO
+
+1) BANCO (obrigatório) — Supabase > SQL Editor > papel "postgres" > Run:
+   supabase/admin/remover_mfa.sql
+   - acesso admin passa a exigir só conta ativa + papel administrativo;
+   - apaga os autenticadores cadastrados (login não pede mais código).
+   Conferência no fim: mfa_restantes = 0.
+
+2) GITHUB — substituir no mesmo caminho:
+   src/components/MemberPanel.tsx   (sem botão Segurança / MFA)
+   src/components/AuthForm.tsx      (login vai direto para o painel)
+   src/components/AdminPanel.tsx    (mensagem clara quando não libera)
+   src/app/seguranca/page.tsx       (/seguranca agora redireciona ao painel)
+   supabase/admin/remover_mfa.sql   (NOVO)
+
+3) Saia do sistema, entre de novo e clique em Administração.

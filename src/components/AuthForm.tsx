@@ -72,13 +72,7 @@ export function AuthForm({
           email,
           password,
         }));
-        if (!error) {
-          const level = await mfa.getAssuranceLevel(supabase);
-          location.href =
-            level.next === "aal2" && level.current !== "aal2"
-              ? "/seguranca"
-              : "/painel";
-        }
+        if (!error) location.href = "/painel";
       }
       if (mode === "recover") {
         ({ error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -97,11 +91,6 @@ export function AuthForm({
         } = await supabase.auth.getUser();
         if (!user)
           throw Error("Link inválido ou expirado. Solicite nova recuperação.");
-        const level = await mfa.getAssuranceLevel(supabase);
-        if (level.next === "aal2" && level.current !== "aal2")
-          throw Error(
-            "Confirme o segundo fator em Segurança antes de alterar a senha.",
-          );
         ({ error } = await supabase.auth.updateUser({ password }));
         if (!error)
           setMessage("Senha alterada. Você já pode acessar o painel.");

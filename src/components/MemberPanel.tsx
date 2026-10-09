@@ -46,9 +46,6 @@ export function MemberPanel() {
             <Link className="btn" href="/academy">
               Meus cursos e Academy
             </Link>
-            <Link className="btn secondary" href="/seguranca">
-              Segurança / MFA
-            </Link>
             <Link className="btn secondary" href="/nova-senha">
               Alterar senha
             </Link>

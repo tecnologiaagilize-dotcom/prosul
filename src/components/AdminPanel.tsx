@@ -198,19 +198,36 @@ export function AdminPanel({ section }: { section: string }) {
       )}
       {!me?.staff ? (
         <div className="card">
-          <h2>Acesso administrativo protegido</h2>
-          <p>
-            É necessária uma conta ativa com papel administrativo e autenticação
-            em duas etapas.
-          </p>
-          <div className="actions">
-            <Link className="btn" href="/entrar">
-              Entrar
-            </Link>
-            <Link className="btn secondary" href="/seguranca">
-              Configurar ou confirmar MFA
-            </Link>
-          </div>
+          {!me && !message ? (
+            <p role="status">Carregando…</p>
+          ) : !me?.profile ? (
+            <>
+              <h2>Entre para acessar a administração</h2>
+              <div className="actions">
+                <Link className="btn" href="/entrar">
+                  Entrar
+                </Link>
+              </div>
+            </>
+          ) : me.profile.status !== "active" || me.profile.role === "member" ? (
+            <>
+              <h2>Sua conta não tem perfil administrativo</h2>
+              <p>
+                Conta: {me.profile.email} · situação {me.profile.status} · papel{" "}
+                {me.profile.role}. Peça a um administrador para ativar seu
+                acesso em Membros e acessos.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2>Acesso administrativo bloqueado pelo banco</h2>
+              <p>
+                Sua conta é {me.profile.role} e está ativa, mas o banco ainda
+                exige autenticação em duas etapas. No Supabase, rode o script
+                supabase/admin/remover_mfa.sql e entre novamente.
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <div className="workspace">
