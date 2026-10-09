@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { participantCountries } from "./countries";
 export type Field = {
   key: string;
   label: string;
@@ -11,6 +12,7 @@ export type Field = {
     | "datetime-local"
     | "select";
   options?: string[];
+  optionLabels?: Record<string, string>;
   required?: boolean;
 };
 const url: Field = { key: "url", label: "Link HTTPS", type: "url" };
@@ -37,6 +39,29 @@ export const kinds = {
       },
       { key: "credit", label: "Crédito da fotografia" },
       { key: "album", label: "Álbum / evento" },
+    ],
+  },
+  country: {
+    label: "Países participantes",
+    group: "Conteúdo",
+    fields: [
+      {
+        key: "code",
+        label: "País",
+        type: "select",
+        options: participantCountries.map(([c]) => c),
+        optionLabels: Object.fromEntries(
+          participantCountries.map(([c, , n]) => [c, n]),
+        ),
+        required: true,
+      },
+      { key: "representative", label: "Nome do representante" },
+      { key: "role", label: "Cargo / função do representante" },
+      {
+        key: "flag",
+        label: "Bandeira personalizada (opcional — link HTTPS da imagem)",
+        type: "url",
+      },
     ],
   },
   page: { label: "Institucional", group: "Conteúdo", fields: [] },
@@ -256,6 +281,8 @@ export const countries = [
   "DO",
   "EC",
   "SV",
+  "GY",
+  "SR",
   "GT",
   "HT",
   "HN",

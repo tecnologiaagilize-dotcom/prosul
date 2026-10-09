@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import { safeUrl, type Resource } from "@/lib/catalog";
+import { framing, framingStyle } from "@/lib/framing";
 export function PublicPhoto({ row }: { row: Resource }) {
   const [failed, setFailed] = useState(false);
   return (
     <figure className="public-photo">
       {safeUrl(row.data.url || "") && !failed ? (
         <a
+          className="photo-frame"
           href={row.data.url}
           target="_blank"
           rel="noopener noreferrer"
@@ -17,6 +19,7 @@ export function PublicPhoto({ row }: { row: Resource }) {
             alt={row.data.alt || row.title}
             loading="lazy"
             referrerPolicy="no-referrer"
+            style={framingStyle(framing(row.data))}
             onError={() => setFailed(true)}
           />
         </a>

@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/client-api";
 import { PhotoUploader } from "./PhotoUploader";
-import { uploadImage } from "@/lib/upload";
+import { removeUploaded, uploadImage } from "@/lib/upload";
+import { PhotoFramer } from "./PhotoFramer";
+import { countryName } from "@/lib/countries";
 import {
   countries,
   kinds,
@@ -124,6 +126,36 @@ export function AdminPanel({ section }: { section: string }) {
       setMessage((e as Error).message);
     } finally {
       setUploading("");
+    }
+  }
+  async function remove(r: any) {
+    if (
+      !window.confirm(
+        `Excluir definitivamente "${r.title}"?\n\nEsta ação não pode ser desfeita.`,
+      )
+    )
+      return;
+    setBusy(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/resources?id=" + r.id, {
+        method: "DELETE",
+      });
+      const d = await res.json();
+      if (!res.ok) throw Error(d.error || "Não foi possível excluir.");
+      // apaga do armazenamento a imagem enviada pelo admin (se houver)
+      await Promise.allSettled([
+        removeUploaded(r.data?.url),
+        removeUploaded(r.data?.cover),
+        removeUploaded(r.data?.flag),
+      ]);
+      if (form?.id === r.id) setForm(null);
+      setMessage(`"${r.title}" excluído.`);
+      await load();
+    } catch (e) {
+      setMessage((e as Error).message);
+    } finally {
+      setBusy(false);
     }
   }
   async function member(r: any) {
@@ -280,6 +312,15 @@ export function AdminPanel({ section }: { section: string }) {
                     )}
                   </>
                 )}
+                {kind === "country" && (
+                  <p className="notice">
+                    Escolha o país, informe o representante e selecione
+                    Publicar. A bandeira aparece automaticamente na parte
+                    inferior da página inicial, na sequência de Ordem. O país
+                    também fica destacado em dourado no globo. Para retirar, use
+                    Excluir (ou Arquivar para guardar o cadastro).
+                  </p>
+                )}
                 {kind === "about" && (
                   <p className="notice">
                     Crie seções como Apresentação, Missão e Objetivos. Publique
@@ -401,16 +442,26 @@ export function AdminPanel({ section }: { section: string }) {
                               id={"f-" + f.key}
                               required={f.required}
                               value={form.data[f.key] || ""}
-                              onChange={(e) =>
-                                change("data", {
-                                  ...form.data,
-                                  [f.key]: e.target.value,
-                                })
-                              }
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setForm((cur: any) => ({
+                                  ...cur,
+                                  // País: preenche o título com o nome do país
+                                  ...(kind === "country" &&
+                                    f.key === "code" &&
+                                    (!cur.title ||
+                                      Object.values(countryName).includes(
+                                        cur.title,
+                                      )) && { title: countryName[v] || "" }),
+                                  data: { ...cur.data, [f.key]: v },
+                                }));
+                              }}
                             >
                               <option value="">Selecione</option>
                               {f.options.map((o) => (
-                                <option key={o}>{o}</option>
+                                <option key={o} value={o}>
+                                  {f.optionLabels?.[o] ?? o}
+                                </option>
                               ))}
                             </select>
                           ) : f.type === "textarea" ? (
@@ -468,6 +519,25 @@ export function AdminPanel({ section }: { section: string }) {
                         </div>
                       ))}
                     </div>
+                    {kind === "photo" && form.data.url && (
+                      <PhotoFramer
+                        url={form.data.url}
+                        fx={Number(form.data.fx ?? 50)}
+                        fy={Number(form.data.fy ?? 50)}
+                        zoom={Number(form.data.zoom ?? 1)}
+                        onChange={(v) =>
+                          setForm((cur: any) => ({
+                            ...cur,
+                            data: {
+                              ...cur.data,
+                              fx: String(v.fx),
+                              fy: String(v.fy),
+                              zoom: String(v.zoom),
+                            },
+                          }))
+                        }
+                      />
+                    )}
                     <div className="split">
                       <div>
                         <label htmlFor="position">Ordem</label>
@@ -514,6 +584,16 @@ export function AdminPanel({ section }: { section: string }) {
                       >
                         Cancelar
                       </button>
+                      {form.id && (
+                        <button
+                          className="danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => remove(form)}
+                        >
+                          Excluir
+                        </button>
+                      )}
                     </div>
                     {kind === "lesson" &&
                       form.id &&
@@ -526,6 +606,7 @@ export function AdminPanel({ section }: { section: string }) {
                   <table>
                     <thead>
                       <tr>
+                        {kind === "photo" && <th>Foto</th>}
                         <th>Título</th>
                         <th>País</th>
                         <th>Estado</th>
@@ -539,8 +620,25 @@ export function AdminPanel({ section }: { section: string }) {
                         )
                         .map((r) => (
                           <tr key={r.id}>
+                            {kind === "photo" && (
+                              <td>
+                                {r.data?.url && (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    className="row-thumb"
+                                    src={r.data.url}
+                                    alt=""
+                                    loading="lazy"
+                                  />
+                                )}
+                              </td>
+                            )}
                             <td>{r.title}</td>
-                            <td>{r.country || "—"}</td>
+                            <td>
+                              {kind === "country"
+                                ? r.data?.code || "—"
+                                : r.country || "—"}
+                            </td>
                             <td>{r.status}</td>
                             <td>
                               <button
@@ -556,7 +654,16 @@ export function AdminPanel({ section }: { section: string }) {
                                   setForm({ ...editable, published });
                                 }}
                               >
-                                Editar
+                                {kind === "photo"
+                                  ? "Editar / enquadrar"
+                                  : "Editar"}
+                              </button>{" "}
+                              <button
+                                className="danger"
+                                disabled={busy}
+                                onClick={() => remove(r)}
+                              >
+                                Excluir
                               </button>
                             </td>
                           </tr>

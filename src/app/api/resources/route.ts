@@ -61,3 +61,23 @@ export async function POST(r: NextRequest) {
     return failure(e instanceof Error ? e.message : "Pedido inválido.", 403);
   }
 }
+export async function DELETE(r: NextRequest) {
+  try {
+    const { db } = await guard(r, true);
+    const id = r.nextUrl.searchParams.get("id") || "";
+    if (!/^[0-9a-f-]{36}$/i.test(id)) return failure("Registro inválido.");
+    const { data, error } = await db.rpc("prosul_delete", { p_id: id });
+    if (error)
+      return failure(
+        /vinculados/.test(error.message)
+          ? "Há registros vinculados a este item. Exclua ou arquive os vinculados primeiro."
+          : /Permissão/.test(error.message)
+            ? "Sem permissão para excluir este item."
+            : "Não foi possível excluir. Se o item tiver inscrições ou progresso, use Arquivar.",
+        409,
+      );
+    return NextResponse.json({ ok: true, data });
+  } catch (e) {
+    return failure(e instanceof Error ? e.message : "Pedido inválido.", 403);
+  }
+}

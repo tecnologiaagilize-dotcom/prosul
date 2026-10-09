@@ -1,4 +1,8 @@
 import { PublicMedia } from "@/components/PublicMedia";
+import { Globe } from "@/components/Globe";
+import { CountriesStrip } from "@/components/CountriesStrip";
+import { createClient } from "@/lib/supabase/server";
+import type { Resource } from "@/lib/catalog";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -47,26 +51,44 @@ const modules = [
     href: "/conteudos/video",
   },
 ];
-export default function Home() {
+export const dynamic = "force-dynamic";
+async function participants(): Promise<Resource[]> {
+  try {
+    const db = await createClient();
+    const { data } = await db.rpc("prosul_feed", { p_kind: "country" });
+    return (data as Resource[] | null) ?? [];
+  } catch {
+    return [];
+  }
+}
+export default async function Home() {
+  const countries = await participants();
   return (
     <div className="wrap">
-      <section className="hero">
-        <span className="eyebrow">FRENTE PARLAMENTAR MISTA PROSUL</span>
-        <h1>
-          Conhecimento que aproxima.
-          <br />
-          Cooperação que transforma.
-        </h1>
-        <p>
-          Um espaço de informação, formação e diálogo sobre a integração da
-          América Latina.
-        </p>
-        <Link className="btn" href="/observatorio">
-          Explorar o observatório <ArrowUpRight size={18} />
-        </Link>
-        <Link style={{ marginLeft: 24 }} href="/cadastrar">
-          Participe da plataforma →
-        </Link>
+      <section className="hero hero-globe">
+        <div className="hero-text">
+          <span className="eyebrow">FRENTE PARLAMENTAR MISTA PROSUL</span>
+          <h1>
+            Conhecimento que aproxima.
+            <br />
+            Cooperação que transforma.
+          </h1>
+          <p>
+            Um espaço de informação, formação e diálogo sobre a integração da
+            América Latina.
+          </p>
+          <Link className="btn" href="/observatorio">
+            Explorar o observatório <ArrowUpRight size={18} />
+          </Link>
+          <Link style={{ marginLeft: 24 }} href="/cadastrar">
+            Participe da plataforma →
+          </Link>
+        </div>
+        <div className="hero-visual">
+          <Globe
+            highlight={countries.map((c) => c.data.code).filter(Boolean)}
+          />
+        </div>
       </section>
       <div className="section-heading">
         <div>
@@ -114,6 +136,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      <CountriesStrip rows={countries} />
     </div>
   );
 }

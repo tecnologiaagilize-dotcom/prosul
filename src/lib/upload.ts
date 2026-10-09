@@ -65,3 +65,11 @@ export function titleFromFile(name: string) {
     .trim();
   return t.length >= 3 ? t.slice(0, 250) : "Foto " + (t || "PROSUL");
 }
+
+/** Remove do Storage um arquivo do bucket da PROSUL (ignora links externos). */
+export async function removeUploaded(url?: string) {
+  const mark = `/storage/v1/object/public/${PHOTO_BUCKET}/`;
+  if (!url || !url.includes(mark)) return;
+  const path = decodeURIComponent(url.split(mark)[1].split("?")[0]);
+  await supabase.storage.from(PHOTO_BUCKET).remove([path]);
+}

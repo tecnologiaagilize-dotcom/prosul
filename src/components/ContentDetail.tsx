@@ -48,7 +48,18 @@ export function ContentDetail({ id }: { id: string }) {
           )}
           <div className="card" style={{ marginTop: 30 }}>
             {Object.entries(row.data)
-              .filter(([key]) => !["external_id", "fetched_at"].includes(key))
+              .filter(
+                ([key]) =>
+                  ![
+                    "external_id",
+                    "fetched_at",
+                    "fx",
+                    "fy",
+                    "zoom",
+                    "cover",
+                    "flag",
+                  ].includes(key),
+              )
               .map(
                 ([key, value]) =>
                   value && (

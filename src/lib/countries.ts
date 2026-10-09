@@ -1,0 +1,66 @@
+/** Países disponíveis para "Países participantes": ISO-2, ISO numérico (mapa) e nome. */
+export const participantCountries: [string, number, string][] = [
+  ["AR", 32, "Argentina"],
+  ["BO", 68, "Bolívia"],
+  ["BR", 76, "Brasil"],
+  ["CL", 152, "Chile"],
+  ["CO", 170, "Colômbia"],
+  ["EC", 218, "Equador"],
+  ["GY", 328, "Guiana"],
+  ["PY", 600, "Paraguai"],
+  ["PE", 604, "Peru"],
+  ["SR", 740, "Suriname"],
+  ["UY", 858, "Uruguai"],
+  ["VE", 862, "Venezuela"],
+  ["MX", 484, "México"],
+  ["GT", 320, "Guatemala"],
+  ["BZ", 84, "Belize"],
+  ["HN", 340, "Honduras"],
+  ["SV", 222, "El Salvador"],
+  ["NI", 558, "Nicarágua"],
+  ["CR", 188, "Costa Rica"],
+  ["PA", 591, "Panamá"],
+  ["CU", 192, "Cuba"],
+  ["DO", 214, "República Dominicana"],
+  ["HT", 332, "Haiti"],
+  ["JM", 388, "Jamaica"],
+  ["TT", 780, "Trinidad e Tobago"],
+  ["BS", 44, "Bahamas"],
+  ["BB", 52, "Barbados"],
+  ["US", 840, "Estados Unidos"],
+  ["CA", 124, "Canadá"],
+  ["PT", 620, "Portugal"],
+  ["ES", 724, "Espanha"],
+  ["IT", 380, "Itália"],
+  ["FR", 250, "França"],
+  ["DE", 276, "Alemanha"],
+  ["GB", 826, "Reino Unido"],
+  ["CN", 156, "China"],
+  ["JP", 392, "Japão"],
+  ["IN", 356, "Índia"],
+  ["ZA", 710, "África do Sul"],
+  ["AO", 24, "Angola"],
+  ["MZ", 508, "Moçambique"],
+];
+export const southAmerica = [
+  "AR",
+  "BO",
+  "BR",
+  "CL",
+  "CO",
+  "EC",
+  "GY",
+  "PY",
+  "PE",
+  "SR",
+  "UY",
+  "VE",
+];
+export const countryName = Object.fromEntries(
+  participantCountries.map(([c, , n]) => [c, n]),
+) as Record<string, string>;
+/** ISO-2 -> id usado no mapa world-atlas (numérico com 3 dígitos). */
+export const atlasId = (iso2: string) => {
+  const n = participantCountries.find(([c]) => c === iso2)?.[1];
+  return n === undefined ? null : String(n).padStart(3, "0");
+};

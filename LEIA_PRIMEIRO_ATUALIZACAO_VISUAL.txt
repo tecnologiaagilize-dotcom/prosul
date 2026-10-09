@@ -1,0 +1,34 @@
+PROSUL — EXCLUIR, ENQUADRAR FOTOS, GLOBO E PAÍSES PARTICIPANTES
+
+Este pacote é CUMULATIVO: inclui também as atualizações anteriores
+(capas de vídeo e upload de fotos). Pode subir tudo de uma vez.
+
+1) BANCO — Supabase > SQL Editor (papel "postgres"), nesta ordem:
+   a) supabase/migrations/003_storage_fotos.sql   (pule se já rodou)
+   b) supabase/migrations/004_excluir_paises.sql  (NOVO)
+   c) OPCIONAL: supabase/admin/paises_america_do_sul.sql
+      -> já cadastra os 12 países da América do Sul, publicados,
+         com "Representante a definir". Depois edite/exclua no admin.
+
+2) GITHUB — substitua/adicione TODOS os arquivos deste zip no mesmo caminho.
+   IMPORTANTE: package.json e package-lock.json mudaram (novas bibliotecas
+   do globo e das bandeiras). Suba os dois juntos, senão o deploy falha.
+   Commit -> a Vercel publica sozinha.
+
+O QUE MUDOU
+- Excluir: botão "Excluir" na lista e no formulário de qualquer conteúdo
+  (fotos, vídeos, países...). Pede confirmação, apaga também a imagem
+  enviada e registra na auditoria. Não tem volta — para só esconder,
+  use Arquivar.
+- Enquadrar foto: Galeria > "Editar / enquadrar". Arraste a foto para
+  mover (horizontal/vertical), roda do mouse ou controle para zoom,
+  "Centralizar / redefinir". Salvar. O site mostra exatamente aquele recorte.
+- Página inicial: globo girando com a América do Sul em verde; os países
+  participantes ficam em dourado. Gira mais devagar quando a América do Sul
+  está de frente.
+- Países participantes: Admin > Conteúdo > Países participantes.
+  Novo registro > escolha o país (título preenche sozinho) > nome e cargo
+  do representante > Publicar. Bandeira automática. Ordem define a
+  sequência. Para retirar: Excluir (ou Arquivar).
+  A faixa de bandeiras aparece no fim da página inicial.
+- Acesso admin sem MFA agora também está registrado no 004.
