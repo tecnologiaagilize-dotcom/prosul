@@ -1,0 +1,31 @@
+PROSUL — UPLOAD DE IMAGENS NA GALERIA DE FOTOS
+
+ORDEM: aplique antes o pacote PROSUL_Capas_Videos.zip (este pacote já inclui
+o globals.css com as duas atualizações).
+
+1) BANCO (uma vez)
+   Supabase > SQL Editor (papel postgres) > rode:
+   supabase/migrations/003_storage_fotos.sql
+   Cria o bucket público prosul-fotos (JPG/PNG/WebP, até 10 MB) e permite
+   envio apenas para administradores e editores.
+
+2) GITHUB (substituir / adicionar no mesmo caminho)
+   src/components/AdminPanel.tsx             (alterado)
+   src/components/PhotoUploader.tsx          (NOVO)
+   src/lib/upload.ts                         (NOVO)
+   src/app/globals.css                       (alterado)
+   supabase/migrations/003_storage_fotos.sql (NOVO)
+   tests/storage.test.ts                     (NOVO)
+   Commit -> a Vercel publica sozinha.
+
+COMO USAR
+Admin > Galeria de fotos > aba Enviar imagens:
+- arraste ou selecione várias fotos (computador ou celular);
+- preencha álbum/evento e crédito (valem para todas);
+- ajuste o título de cada foto se quiser;
+- Publicar imediatamente marcado -> já aparecem no site.
+Fotos grandes são reduzidas para 2000px antes do envio.
+
+Aba Cadastrar por link / editar: formulário antigo, agora com botão
+Enviar arquivo ao lado do link. Em Vídeos, o campo Capa também ganhou
+o botão Enviar arquivo.

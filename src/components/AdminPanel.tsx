@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/client-api";
+import { PhotoUploader } from "./PhotoUploader";
+import { uploadImage } from "@/lib/upload";
 import {
   countries,
   kinds,
@@ -33,7 +35,9 @@ export function AdminPanel({ section }: { section: string }) {
     [busy, setBusy] = useState(false),
     [offset, setOffset] = useState(0),
     [query, setQuery] = useState(""),
-    [totalParents, setTotalParents] = useState(false);
+    [totalParents, setTotalParents] = useState(false),
+    [photoTab, setPhotoTab] = useState<"upload" | "link">("upload"),
+    [uploading, setUploading] = useState("");
   const kind = kindKeys.includes(section as Kind) ? (section as Kind) : null;
   const accessible = (k: string) =>
     me?.profile?.role === "admin" ||
@@ -104,6 +108,22 @@ export function AdminPanel({ section }: { section: string }) {
       setMessage((e as Error).message);
     } finally {
       setBusy(false);
+    }
+  }
+  async function uploadField(key: string, file?: File) {
+    if (!file) return;
+    setUploading(key);
+    setMessage("");
+    try {
+      const url = await uploadImage(
+        file,
+        key === "cover" ? "capas" : "galeria",
+      );
+      setForm((f: any) => ({ ...f, data: { ...f.data, [key]: url } }));
+    } catch (e) {
+      setMessage((e as Error).message);
+    } finally {
+      setUploading("");
     }
   }
   async function member(r: any) {
@@ -227,11 +247,38 @@ export function AdminPanel({ section }: { section: string }) {
                   </p>
                 )}
                 {kind === "photo" && (
-                  <p className="notice">
-                    Cadastre o link direto HTTPS da foto e sua descrição. Ao
-                    publicar, a imagem aparecerá na galeria da página inicial.
-                    Use Ordem para escolher a sequência.
-                  </p>
+                  <>
+                    <div className="tabs" role="tablist">
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={photoTab === "upload"}
+                        className={photoTab === "upload" ? "active" : ""}
+                        onClick={() => setPhotoTab("upload")}
+                      >
+                        Enviar imagens
+                      </button>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={photoTab === "link"}
+                        className={photoTab === "link" ? "active" : ""}
+                        onClick={() => setPhotoTab("link")}
+                      >
+                        Cadastrar por link / editar
+                      </button>
+                    </div>
+                    {photoTab === "upload" ? (
+                      <PhotoUploader onDone={load} />
+                    ) : (
+                      <p className="notice">
+                        Cadastre o link direto HTTPS da foto (ou use o botão
+                        Enviar arquivo) e sua descrição. Ao publicar, a imagem
+                        aparecerá na galeria da página inicial. Use Ordem para
+                        escolher a sequência.
+                      </p>
+                    )}
+                  </>
                 )}
                 {kind === "about" && (
                   <p className="notice">
@@ -241,7 +288,12 @@ export function AdminPanel({ section }: { section: string }) {
                   </p>
                 )}
                 <div className="actions">
-                  <button onClick={() => setForm(empty(kind))}>
+                  <button
+                    onClick={() => {
+                      setPhotoTab("link");
+                      setForm(empty(kind));
+                    }}
+                  >
                     Novo registro
                   </button>
                   <input
@@ -252,7 +304,7 @@ export function AdminPanel({ section }: { section: string }) {
                     onChange={(e) => setQuery(e.target.value)}
                   />
                 </div>
-                {form && (
+                {form && (kind !== "photo" || photoTab === "link") && (
                   <form className="card form" onSubmit={save}>
                     <h2>{form.id ? "Editar registro" : "Novo registro"}</h2>
                     <div>
@@ -389,6 +441,30 @@ export function AdminPanel({ section }: { section: string }) {
                               }
                             />
                           )}
+                          {((kind === "photo" && f.key === "url") ||
+                            (kind === "video" && f.key === "cover")) && (
+                            <div className="inline-upload">
+                              <label className="btn secondary">
+                                {uploading === f.key
+                                  ? "Enviando…"
+                                  : "Enviar arquivo"}
+                                <input
+                                  type="file"
+                                  accept="image/jpeg,image/png,image/webp"
+                                  hidden
+                                  disabled={!!uploading}
+                                  onChange={(e) => {
+                                    uploadField(f.key, e.target.files?.[0]);
+                                    e.target.value = "";
+                                  }}
+                                />
+                              </label>
+                              {form.data[f.key] && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={form.data[f.key]} alt="" />
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -476,6 +552,7 @@ export function AdminPanel({ section }: { section: string }) {
                                     updated_at,
                                     ...editable
                                   } = r;
+                                  setPhotoTab("link");
                                   setForm({ ...editable, published });
                                 }}
                               >
