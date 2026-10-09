@@ -219,6 +219,27 @@ export function AdminPanel({ section }: { section: string }) {
             {section === "collect" && <Collector />}
             {kind && (
               <>
+                {kind === "video" && (
+                  <p className="notice">
+                    Cole o link público do YouTube ou de uma publicação/Reel do
+                    Instagram. Ao publicar, ele aparecerá na página inicial e no
+                    menu Vídeos. Não cole código HTML.
+                  </p>
+                )}
+                {kind === "photo" && (
+                  <p className="notice">
+                    Cadastre o link direto HTTPS da foto e sua descrição. Ao
+                    publicar, a imagem aparecerá na galeria da página inicial.
+                    Use Ordem para escolher a sequência.
+                  </p>
+                )}
+                {kind === "about" && (
+                  <p className="notice">
+                    Crie seções como Apresentação, Missão e Objetivos. Publique
+                    e ajuste Ordem para exibi-las no menu Conheça a Frente
+                    Parlamentar Mista PROSUL.
+                  </p>
+                )}
                 <div className="actions">
                   <button onClick={() => setForm(empty(kind))}>
                     Novo registro

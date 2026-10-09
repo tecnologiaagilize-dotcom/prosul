@@ -392,3 +392,34 @@ td {
     padding: 0;
   }
 }
+
+.home-media {
+  margin-top: 48px;
+}
+.public-photo {
+  margin: 0;
+}
+.public-photo img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.public-photo figcaption {
+  margin-top: 16px;
+}
+.video-block {
+  margin: 24px 0;
+  min-width: 0;
+}
+.about-sections {
+  display: grid;
+  gap: 24px;
+}
+.grid > *,
+.workspace > * {
+  min-width: 0;
+}
+.site-header nav {
+  flex-wrap: wrap;
+}

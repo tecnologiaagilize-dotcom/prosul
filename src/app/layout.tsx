@@ -21,6 +21,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <small>FRENTE PARLAMENTAR MISTA</small>
           </Link>
           <nav aria-label="Principal">
+            <Link href="/conheca-a-frente">
+              Conheça a Frente Parlamentar Mista PROSUL
+            </Link>
+            <Link href="/galeria">Galeria</Link>
+            <Link href="/conteudos/video">Vídeos</Link>
             <Link href="/conteudos/news">Notícias</Link>
             <Link href="/academy">Academy</Link>
             <Link href="/observatorio">Observatório</Link>

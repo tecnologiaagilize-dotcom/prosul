@@ -48,3 +48,7 @@ A publicação preserva a última versão pública durante edições em rascunho
 - `docs/VALIDACAO.md`: verificações executadas e condições de homologação.
 
 Conteúdos institucionais, marca, contatos, tradução e privacidade precisam de validação da administração PROSUL. Não foram habilitadas integrações pagas ou credenciais externas. A classificação de oportunidades é informativa; proposta legislativa não equivale a incentivo vigente.
+
+## Atualização de mídia e página institucional
+
+Consulte `LEIA_PRIMEIRO_NOVOS_MENUS.txt`. Após a migração inicial, execute `002_public_media.sql`. A galeria pública usa links diretos HTTPS e a página Conheça a Frente Parlamentar Mista PROSUL permite seções ordenadas. A ativação manual de administrador está em `supabase/admin/ativar_paulo.sql` e exige cadastro confirmado.

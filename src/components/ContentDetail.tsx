@@ -1,4 +1,5 @@
 "use client";
+import { PublicPhoto } from "./PublicPhoto";
 import { VideoPlayer } from "./VideoPlayer";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client-api";
@@ -36,6 +37,7 @@ export function ContentDetail({ id }: { id: string }) {
           <h1>{row.title}</h1>
           <p className="muted">{row.summary}</p>
           <div className="prose">{row.body}</div>
+          {row.kind === "photo" && <PublicPhoto key={row.id} row={row} />}
           {row.kind === "video" && (
             <VideoPlayer
               key={row.id}

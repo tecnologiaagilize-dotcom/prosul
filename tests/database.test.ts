@@ -9,6 +9,12 @@ test("migração, isolamento, MFA, publicação e formação", async () => {
       `create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.uid',true),'')::uuid$$;create function auth.jwt() returns jsonb language sql stable as $$select jsonb_build_object('aal',current_setting('request.aal',true))$$;grant usage on schema public,auth to anon,authenticated;grant execute on all functions in schema auth to anon,authenticated;`,
     );
     await db.exec(readFileSync("supabase/migrations/001_prosul.sql", "utf8"));
+    await db.exec(
+      readFileSync("supabase/migrations/002_public_media.sql", "utf8"),
+    );
+    await db.exec(
+      readFileSync("supabase/migrations/002_public_media.sql", "utf8"),
+    );
     const admin = "00000000-0000-4000-8000-000000000001",
       member = "00000000-0000-4000-8000-000000000002",
       other = "00000000-0000-4000-8000-000000000003";
@@ -79,8 +85,44 @@ test("migração, isolamento, MFA, publicação e formação", async () => {
       title: "Bem privado",
       status: "published",
     });
+    const photo = await save({
+      kind: "photo",
+      title: "Foto teste",
+      status: "draft",
+      data: { url: "https://example.org/foto.jpg", alt: "Participantes" },
+    });
     await db.exec("set role anon");
-    const feed = await db.query<any>("select * from prosul_feed()");
+    assert.equal(
+      (await db.query("select * from prosul_feed('photo')")).rows.length,
+      0,
+    );
+    await db.exec(
+      `set role authenticated;set request.uid='${admin}';set request.aal='aal2'`,
+    );
+    await save({
+      id: photo,
+      version: 1,
+      kind: "photo",
+      title: "Foto teste",
+      status: "published",
+      data: { url: "https://example.org/foto.jpg", alt: "Participantes" },
+    });
+    const about = await save({
+      kind: "about",
+      title: "Sobre nós",
+      body: "Missão",
+      status: "published",
+    });
+    await db.exec("set role anon");
+    assert.equal(
+      (await db.query("select * from prosul_feed('photo')")).rows.length,
+      1,
+    );
+    assert.equal(
+      (await db.query("select * from prosul_feed('about')")).rows.length,
+      1,
+    );
+    const feed = await db.query<any>("select * from prosul_feed('news')");
     assert.equal(feed.rows.length, 1);
     assert.equal(
       (Object.values(feed.rows[0])[0] as any).title,
@@ -180,6 +222,29 @@ test("migração, isolamento, MFA, publicação e formação", async () => {
       (await db.query("select * from prosul_certificate_verify($1)", [cert]))
         .rows.length,
       1,
+    );
+    await db.exec(
+      "reset role;alter table auth.users add column email_confirmed_at timestamptz;",
+    );
+    await db.query("update auth.users set email=$1 where id=$2", [
+      "pauloinvesst74@gmail.com",
+      other,
+    ]);
+    const bootstrap = readFileSync("supabase/admin/ativar_paulo.sql", "utf8");
+    await assert.rejects(() => db.exec(bootstrap));
+    await db.exec("rollback");
+    await db.query(
+      "update auth.users set email_confirmed_at=now() where id=$1",
+      [other],
+    );
+    await db.exec(bootstrap);
+    assert.equal(
+      (
+        await db.query<any>("select role from prosul_members where id=$1", [
+          other,
+        ])
+      ).rows[0].role,
+      "admin",
     );
   } finally {
     await db.close();

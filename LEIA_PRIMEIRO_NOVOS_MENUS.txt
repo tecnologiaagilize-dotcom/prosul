@@ -1,0 +1,57 @@
+PROSUL — ADMINISTRADOR, VÍDEOS, GALERIA E PÁGINA INSTITUCIONAL
+
+ATUALIZAÇÃO DOS ARQUIVOS
+Este pacote contém apenas os arquivos novos e alterados, baseados no commit dad14dc.
+Extraia e envie o CONTEÚDO para a raiz do repositório, substituindo os arquivos.
+Mantenha src/ como estrutura ativa; não recoloque app/ na raiz.
+
+BANCO DE DADOS
+1. Se o esquema PROSUL já existe: execute apenas
+   supabase/migrations/002_public_media.sql no SQL Editor do Supabase.
+2. Se public.prosul_resources ainda não existe: instale primeiro 001_prosul.sql
+   (arquivo do pacote anterior) e depois 002_public_media.sql.
+3. Não execute novamente 001_prosul.sql em banco já instalado.
+   002_public_media.sql adiciona tipos editoriais e pode ser reaplicada.
+
+ADMINISTRADOR — pauloinvesst74@gmail.com
+A conta NÃO foi criada remotamente: não há acesso ao seu projeto Supabase.
+1. No site, abra /cadastrar e cadastre o e-mail acima com senha de pelo menos
+   12 caracteres, preenchendo nome e confirmação de senha.
+2. Confirme o e-mail recebido (SMTP e URLs de Auth precisam estar configurados).
+3. No SQL Editor, execute supabase/admin/ativar_paulo.sql.
+   O script exige que esse e-mail já esteja confirmado; não grava senha.
+4. Entre em /entrar. Em /seguranca, configure e confirme o autenticador.
+5. Abra /admin. Em Minha conta > Alterar senha, você pode trocar a senha.
+A senha curta indicada na conversa não atende ao mínimo do aplicativo.
+Nenhuma senha foi embutida no código ou no SQL.
+
+NOVOS MENUS DO ADMINISTRADOR (SEÇÃO CONTEÚDO)
+- Conheça a Frente Parlamentar Mista PROSUL: crie seções com título, resumo,
+  conteúdo e ordem. Ex.: Apresentação, Missão, Objetivos e Atuação.
+- Vídeos · Instagram e YouTube: cole a URL pública do vídeo/post/Reel, preencha
+  título e resumo e selecione Publicar. Não cole HTML.
+- Galeria de fotos: cole o endereço direto HTTPS da imagem, informe descrição
+  acessível, crédito e álbum/evento. Selecione Publicar.
+
+EXIBIÇÃO SEM LOGIN
+- A página inicial exibe até 6 fotos e 6 vídeos publicados, na ordem editorial.
+- /galeria exibe fotos com paginação e ampliação por link.
+- /conteudos/video exibe os vídeos com players.
+- /conheca-a-frente exibe as seções institucionais publicadas.
+- /sobre redireciona para /conheca-a-frente.
+- Rascunhos novos não aparecem ao público; arquivar retira da exibição.
+
+Fotos são cadastradas por URL direta de imagem (não link de página do Instagram).
+Esta atualização não inclui upload de arquivos. Você pode hospedar fotos em
+serviço próprio e usar o link público HTTPS. O administrador escolhe o que publicar.
+
+Os vídeos permanecem hospedados nas plataformas de origem; não são copiados.
+O visitante clica para carregar o player externo. Publicações privadas, removidas
+ou com incorporação bloqueada podem não reproduzir; o link para a origem permanece.
+Não há importação automática de todos os vídeos de um perfil/canal.
+
+VALIDAÇÃO
+10 testes aprovados, incluindo migração reexecutável, proteção de rascunhos,
+exibição pública de fotos e seções institucionais, URLs dos players e ativação
+administrativa somente depois da confirmação de e-mail. Build de produção validado.
+E-mails/MFA e players externos precisam ser conferidos no seu ambiente real.

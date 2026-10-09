@@ -15,6 +15,30 @@ export type Field = {
 };
 const url: Field = { key: "url", label: "Link HTTPS", type: "url" };
 export const kinds = {
+  about: {
+    label: "Conheça a Frente Parlamentar Mista PROSUL",
+    group: "Conteúdo",
+    fields: [],
+  },
+  photo: {
+    label: "Galeria de fotos",
+    group: "Conteúdo",
+    fields: [
+      {
+        key: "url",
+        label: "Link HTTPS da imagem (JPG, PNG ou WebP)",
+        type: "url",
+        required: true,
+      },
+      {
+        key: "alt",
+        label: "Descrição da imagem para acessibilidade",
+        required: true,
+      },
+      { key: "credit", label: "Crédito da fotografia" },
+      { key: "album", label: "Álbum / evento" },
+    ],
+  },
   page: { label: "Institucional", group: "Conteúdo", fields: [] },
   news: {
     label: "Notícias",
@@ -22,10 +46,10 @@ export const kinds = {
     fields: [{ key: "source", label: "Fonte oficial", type: "url" }, url],
   },
   video: {
-    label: "Vídeos",
+    label: "Vídeos · Instagram e YouTube",
     group: "Conteúdo",
     fields: [
-      { ...url, required: true },
+      { ...url, label: "Link do vídeo ou publicação", required: true },
       {
         key: "transcript",
         label: "Transcrição ou alternativa textual",

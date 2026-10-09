@@ -1,3 +1,4 @@
+import { PublicMedia } from "@/components/PublicMedia";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -72,7 +73,9 @@ export default function Home() {
           <small>EXPLORE A PLATAFORMA</small>
           <h2>Conexões para o desenvolvimento</h2>
         </div>
-        <Link href="/conteudos/page">Conheça a Frente →</Link>
+        <Link href="/conheca-a-frente">
+          Conheça a Frente Parlamentar Mista PROSUL →
+        </Link>
       </div>
       <div className="grid">
         {modules.map((m) => (
@@ -84,6 +87,8 @@ export default function Home() {
           </Link>
         ))}
       </div>
+      <PublicMedia kind="photo" preview />
+      <PublicMedia kind="video" preview />
       <section
         className="card"
         style={{
