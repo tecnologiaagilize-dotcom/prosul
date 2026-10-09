@@ -82,7 +82,11 @@ export function PublicMedia({
                   <Link href={"/conteudo/" + r.id}>{r.title}</Link>
                 </h3>
                 <p>{r.summary}</p>
-                <VideoPlayer url={r.data.url || ""} title={r.title} />
+                <VideoPlayer
+                  url={r.data.url || ""}
+                  cover={r.data.cover}
+                  title={r.title}
+                />
               </article>
             ) : (
               <article className="card" key={r.id}>

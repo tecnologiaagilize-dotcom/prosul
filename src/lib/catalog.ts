@@ -51,6 +51,12 @@ export const kinds = {
     fields: [
       { ...url, label: "Link do vídeo ou publicação", required: true },
       {
+        key: "cover",
+        label:
+          "Capa (link HTTPS da imagem) — opcional; YouTube e Instagram usam a capa automática",
+        type: "url",
+      },
+      {
         key: "transcript",
         label: "Transcrição ou alternativa textual",
         type: "textarea",

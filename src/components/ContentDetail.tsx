@@ -42,6 +42,7 @@ export function ContentDetail({ id }: { id: string }) {
             <VideoPlayer
               key={row.id}
               url={row.data.url || ""}
+              cover={row.data.cover}
               title={row.title}
             />
           )}

@@ -5,11 +5,11 @@ import { resourceSchema } from "../src/lib/catalog";
 test("YouTube, Shorts e Instagram geram apenas URLs canônicas", () => {
   assert.equal(
     mediaEmbed("https://youtu.be/abcdefghijk?si=abc")?.src,
-    "https://www.youtube-nocookie.com/embed/abcdefghijk",
+    "https://www.youtube-nocookie.com/embed/abcdefghijk?autoplay=1",
   );
   assert.equal(
     mediaEmbed("https://www.youtube.com/shorts/abcdefghijk")?.src,
-    "https://www.youtube-nocookie.com/embed/abcdefghijk",
+    "https://www.youtube-nocookie.com/embed/abcdefghijk?autoplay=1",
   );
   assert.equal(
     mediaEmbed("https://www.instagram.com/reel/ABC_123/?igsh=test")?.src,
@@ -23,6 +23,20 @@ test("YouTube, Shorts e Instagram geram apenas URLs canônicas", () => {
     "https://youtube.com/watch?v=bad",
   ])
     assert.equal(mediaEmbed(u), null);
+});
+test("Capa automática do YouTube e links de Instagram com perfil", () => {
+  assert.equal(
+    mediaEmbed("https://www.youtube.com/watch?v=abcdefghijk")?.thumb,
+    "https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg",
+  );
+  assert.equal(
+    mediaEmbed("https://www.instagram.com/prosul.oficial/reel/ABC_123/")?.src,
+    "https://www.instagram.com/reel/ABC_123/embed/",
+  );
+  assert.equal(
+    mediaEmbed("https://www.instagram.com/reels/ABC_123/")?.src,
+    "https://www.instagram.com/reel/ABC_123/embed/",
+  );
 });
 test("Galeria exige imagem e descrição; página institucional aceita seções", () => {
   assert.equal(

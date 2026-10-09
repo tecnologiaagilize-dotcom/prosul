@@ -1,16 +1,20 @@
 /** Gera embeds somente para hosts e identificadores conhecidos. */
 export function mediaEmbed(
   value: string,
-): { src: string; instagram: boolean } | null {
+): { src: string; instagram: boolean; thumb?: string } | null {
   try {
     const u = new URL(value);
     if (u.protocol !== "https:" || u.username || u.password || u.port)
       return null;
     if (["instagram.com", "www.instagram.com"].includes(u.hostname)) {
-      const m = u.pathname.match(/^\/(p|reel|tv)\/([A-Za-z0-9_-]+)\/?$/);
+      // Aceita /p/, /reel/, /reels/, /tv/ e também /perfil/reel/CODIGO
+      const m = u.pathname.match(
+        /^\/(?:[A-Za-z0-9._]+\/)?(p|reels?|tv)\/([A-Za-z0-9_-]+)\/?$/,
+      );
+      const type = m?.[1] === "reels" ? "reel" : m?.[1];
       return m
         ? {
-            src: `https://www.instagram.com/${m[1]}/${m[2]}/embed/`,
+            src: `https://www.instagram.com/${type}/${m[2]}/embed/`,
             instagram: true,
           }
         : null;
@@ -28,8 +32,9 @@ export function mediaEmbed(
             : u.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)\/?$/)?.[1];
       return id && /^[\w-]{11}$/.test(id)
         ? {
-            src: "https://www.youtube-nocookie.com/embed/" + id,
+            src: "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1",
             instagram: false,
+            thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
           }
         : null;
     }

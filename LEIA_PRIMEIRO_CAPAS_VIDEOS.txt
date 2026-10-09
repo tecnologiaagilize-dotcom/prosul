@@ -1,0 +1,20 @@
+PROSUL — CAPA NOS VÍDEOS (INSTAGRAM E YOUTUBE)
+
+ARQUIVOS ALTERADOS (substituir no GitHub, mesmo caminho):
+  src/components/VideoPlayer.tsx
+  src/components/PublicMedia.tsx
+  src/components/ContentDetail.tsx
+  src/lib/media.ts
+  src/lib/catalog.ts
+  src/app/globals.css
+  tests/media.test.ts
+
+Não há SQL. Não precisa alterar banco.
+
+COMO FICA
+- YouTube: capa automática do vídeo com botão ▶. Clicou, toca.
+- Instagram: a publicação aparece incorporada, já mostrando a capa.
+- Campo novo no admin (Vídeos): "Capa (link HTTPS da imagem)" — opcional.
+  Se preencher, essa imagem vira a capa (vale para Instagram e YouTube).
+- Links do Instagram com o perfil no meio (instagram.com/perfil/reel/CODIGO)
+  e /reels/ agora também funcionam.
