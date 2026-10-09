@@ -1,0 +1,40 @@
+PROSUL — CORREÇÃO DO BUILD VERCEL
+
+Este ZIP contém o projeto completo corrigido, baseado no commit a261f5d.
+O build completo passou localmente. Nenhum SQL ou dado foi alterado.
+
+IMPORTANTE: enviar os arquivos novos por cima NÃO remove os antigos.
+O app/ antigo na raiz deve sair para o Next usar src/app/.
+
+COMO ATUALIZAR
+1. Faça um backup da cópia atual do repositório.
+2. Extraia este ZIP em uma pasta separada.
+3. No repositório, remova da RAIZ somente estas pastas e arquivos antigos:
+   app/
+   components/
+   lib/
+   middleware.ts
+   next.config.ts
+   eslint.config.mjs
+   tsconfig.tsbuildinfo (se existir)
+   As versões anteriores úteis estão preservadas em legacy/ neste ZIP.
+4. Copie todos os arquivos extraídos para a RAIZ do repositório, substituindo
+   os arquivos de mesmo nome. Inclua .gitignore (pode estar oculto).
+   package.json e src/ devem ficar diretamente na raiz, sem pasta extra.
+5. Preserve .git/, as variáveis da Vercel e seu .env.local privado, se existir.
+   Não envie .env.local, node_modules/ ou .next/ ao GitHub.
+6. Faça commit das alterações e das remoções. Com GitHub Desktop, revise a
+   lista de Changes, faça Commit e Push origin. Pelo site, a remoção dos
+   arquivos antigos também precisa ser feita; somente Upload files não basta.
+7. Na Vercel, mantenha Root Directory na raiz, Next.js e npm run build.
+   O deploy deve usar o novo commit. Node está fixado em 22.x.
+
+CONFERÊNCIA DA ESTRUTURA
+- EXISTE: src/app/
+- EXISTE: src/proxy.ts
+- EXISTE: next.config.mjs
+- EXISTE: legacy/app/ (apenas referência, fora da compilação)
+- NÃO EXISTE NA RAIZ: app/, middleware.ts ou next.config.ts
+
+Não execute novamente a migração SQL apenas por causa desta correção.
+Se o banco ainda não foi instalado, siga README.md separadamente.
