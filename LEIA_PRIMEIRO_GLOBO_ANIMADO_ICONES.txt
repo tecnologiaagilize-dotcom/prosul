@@ -1,0 +1,18 @@
+PROSUL — GLOBO ANIMADO E NOVOS ÍCONES
+
+Substituir/adicionar no GitHub (mesmo caminho). Sem SQL.
+  src/app/page.tsx                 (alterado)
+  src/app/globals.css              (alterado)
+  public/media/globo-prosul.mp4    (NOVO — animação, 1,2 MB)
+  public/media/globo-prosul.webm   (NOVO — mesma animação, outros navegadores)
+  public/media/globo-prosul.jpg    (NOVO — imagem exibida até o vídeo carregar)
+  public/icons/*.webp              (NOVOS — 6 ícones)
+
+- Faixa de bandeiras abaixo do menu: removida.
+- Globo: a animação enviada roda em loop no banner (sem som).
+  O GIF tinha 22 MB; convertido para vídeo de 1,2 MB, mesma animação,
+  carrega muito mais rápido.
+- Ícones metálicos nos 6 cartões da página inicial.
+
+Os arquivos src/components/Globe.tsx e CountriesStrip.tsx não são mais
+usados na página inicial; podem ficar no repositório.

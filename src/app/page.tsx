@@ -1,70 +1,47 @@
 import { PublicMedia } from "@/components/PublicMedia";
-import { Globe } from "@/components/Globe";
-import { CountriesStrip } from "@/components/CountriesStrip";
-import { createClient } from "@/lib/supabase/server";
-import type { Resource } from "@/lib/catalog";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  BookOpen,
-  Globe2,
-  Landmark,
-  CalendarDays,
-  Building2,
-  PlayCircle,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 const modules = [
   {
-    icon: Landmark,
+    icon: "/icons/observatorio.webp",
     title: "Observatório Legislativo",
     text: "Acompanhe notícias e projetos sobre integração latino-americana.",
     href: "/observatorio",
   },
   {
-    icon: BookOpen,
+    icon: "/icons/academy.webp",
     title: "PROSUL Academy",
     text: "Cursos, jornadas e formação para ampliar conhecimentos e conexões.",
     href: "/academy",
   },
   {
-    icon: Globe2,
+    icon: "/icons/incentivos.webp",
     title: "Incentivos e investimentos",
     text: "Informações com fontes e situações claramente identificadas.",
     href: "/conteudos/opportunity",
   },
   {
-    icon: CalendarDays,
+    icon: "/icons/agenda.webp",
     title: "Agenda de cooperação",
     text: "Encontros, debates, seminários e atividades institucionais.",
     href: "/conteudos/event",
   },
   {
-    icon: Building2,
+    icon: "/icons/instituicoes.webp",
     title: "Instituições",
     text: "Conheça as organizações com informações publicadas na plataforma.",
     href: "/conteudos/organization",
   },
   {
-    icon: PlayCircle,
+    icon: "/icons/videos.webp",
     title: "Vídeos e publicações",
     text: "Conteúdos para compreender e acompanhar a integração regional.",
     href: "/conteudos/video",
   },
 ];
-export const dynamic = "force-dynamic";
-async function participants(): Promise<Resource[]> {
-  try {
-    const db = await createClient();
-    const { data } = await db.rpc("prosul_feed", { p_kind: "country" });
-    return (data as Resource[] | null) ?? [];
-  } catch {
-    return [];
-  }
-}
-export default async function Home() {
-  const countries = await participants();
+export default function Home() {
   return (
-    <div className="wrap">
+    <div className="wrap home">
       <section className="hero hero-globe">
         <div className="hero-text">
           <span className="eyebrow">FRENTE PARLAMENTAR MISTA PROSUL</span>
@@ -85,9 +62,19 @@ export default async function Home() {
           </Link>
         </div>
         <div className="hero-visual">
-          <Globe
-            highlight={countries.map((c) => c.data.code).filter(Boolean)}
-          />
+          <video
+            className="globe-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/media/globo-prosul.jpg"
+            aria-label="Globo PROSUL girando, com a América do Sul em destaque e bandeiras ao redor"
+          >
+            <source src="/media/globo-prosul.mp4" type="video/mp4" />
+            <source src="/media/globo-prosul.webm" type="video/webm" />
+          </video>
         </div>
       </section>
       <div className="section-heading">
@@ -102,7 +89,15 @@ export default async function Home() {
       <div className="grid">
         {modules.map((m) => (
           <Link className="card" key={m.title} href={m.href}>
-            <m.icon color="#008339" size={28} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="module-icon"
+              src={m.icon}
+              alt=""
+              width={72}
+              height={72}
+              loading="lazy"
+            />
             <h3>{m.title}</h3>
             <p className="muted">{m.text}</p>
             <ArrowUpRight size={20} />
@@ -136,7 +131,6 @@ export default async function Home() {
           </Link>
         </div>
       </section>
-      <CountriesStrip rows={countries} />
     </div>
   );
 }
